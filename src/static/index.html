@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pediatric Doctor Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Updated background-image to point to a local static file */
+            background-image: url('background_image.jpg'); /* Assuming your image is named background.jpg in the static folder */
+            background-size: cover; /* Cover the entire viewport */
+            background-repeat: no-repeat; /* Do not repeat the image */
+            background-attachment: fixed; /* Keep background fixed when scrolling */
+            background-position: center center; /* Center the background image */
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #4a5568;
+            min-width: 150px;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row-4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 101, 101, 0.4);
+        }
+
+        .patient-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+        }
+
+        .patient-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .patient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .patient-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .patient-age {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .patient-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            color: #718096;
+        }
+
+        .info-label {
+            font-weight: 600;
+            margin-right: 8px;
+            color: #4a5568;
+        }
+
+        .patient-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            padding-left: 45px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close {
+            color: #a0aec0;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #667eea;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background-color: #f0fff4;
+            border: 1px solid #9ae6b4;
+            color: #276749;
+        }
+
+        .alert-error {
+            background-color: #fed7d7;
+            border: 1px solid #feb2b2;
+            color: #c53030;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .status-in {
+            color: #2ce707;
+            font-weight: bold;
+        }
+
+        .status-out {
+            color: #f30828;
+            font-weight: bold;
+        }
+
+        .expandable-card {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .today-patient-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .form-row, .form-row-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .patient-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .patient-actions {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center;">
+                    <img src="/images.jpeg" alt="Clinic Logo" style="height: 1.5em; vertical-align: middle; margin-right: 10px;" onerror="this.style.display='none'">
+                    <div>
+                        <h1>🏥 Pediatric Department</h1>
+                        <p>Your Kid's Comfort & Health Are Our Top Priorities</p>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div id="user-info" style="margin-bottom: 10px; color: #4a5568; font-size: 0.9rem;"></div>
+                    <button class="btn btn-secondary" onclick="logout()" style="padding: 8px 16px; font-size: 0.9rem;">
+                        🚪 Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="showTab('new-reservation')">📝 New Reservation</button>
+            <button class="nav-tab" onclick="showTab('patients')">👶 Patients</button>
+            <button class="nav-tab" onclick="showTab('add-patient')">➕ Add Patient</button>
+            <button class="nav-tab" onclick="showTab('awaiting-hall')">⏳ Awaiting Hall</button>
+            <button class="nav-tab" onclick="showTab('finished-reservations')">✅ Finished</button>
+            <button class="nav-tab" onclick="showTab('patient-history')">📋 Patient History</button>
+            <button class="nav-tab" onclick="showTab('reports')">📋 Reports</button>
+            <button class="nav-tab" onclick="showTab('settings')" id="settings-tab" style="display: none;">⚙️ Settings</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: #4a5568;">Dashboard Overview</h2>
+                <button class="btn btn-danger" onclick="performDailyReset()" style="padding: 10px 20px;">
+                    🔄 Daily Reset
+                </button>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card" onclick="showTotalPatientsDetails()">
+                    <div class="stat-number" id="total-patients">0</div>
+                    <div class="stat-label">Total Patients</div>
+                </div>
+                <div class="stat-card" onclick="showNewPatientsDetails()">
+                    <div class="stat-number" id="new-patients">0</div>
+                    <div class="stat-label">New This Month</div>
+                </div>
+                <div class="stat-card" onclick="showAverageAgeDetails()">
+                    <div class="stat-number" id="avg-age">0</div>
+                    <div class="stat-label">Average Age</div>
+                </div>
+                <div class="stat-card" onclick="showTodayPatientsDetails()">
+                    <div class="stat-number" id="today-patients">0</div>
+                    <div class="stat-label">Today's Patients</div>
+                </div>
+            </div>
+            
+            <!-- Today's Patients Expandable Section -->
+            <div id="today-patients-expanded" class="expandable-card" style="display: none;">
+                <h3 style="margin-bottom: 15px;">Today's Patients Details</h3>
+                <div id="today-patients-list"></div>
+                <button class="btn btn-primary" onclick="submitTodayPatients()" style="margin-top: 15px;">Submit "In" Patients to Hall</button>
+            </div>
+        </div>
+
+        <!-- New Reservation Tab -->
+        <div id="new-reservation" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #4a5568;">New Reservation</h2>
+            
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="reservation-search" placeholder="Search for existing patient..." onkeyup="searchExistingPatients()">
+            </div>
+            
+            <div id="existing-patients-results" style="margin-bottom: 20px;"></div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <p style="color: #718096; margin-bottom: 15px;">Or add a new patient:</p>
+                <button class="btn btn-primary" onclick="showTab('add-patient')">➕ Add New Patient</button>
+            </div>
+            
+            <div id="reservation-form" style="display: none;">
+                <h3 style="margin-bottom: 15px;">Select Visit Type:</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="examination" name="visit_type" value="examination">
+                        <label for="examination">Examination</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="fast-examination" name="visit_type" value="fast examination">
+                        <label for="fast-examination">Fast Examination</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="consultation" name="visit_type" value="consultation">
+                        <label for="consultation">Consultation</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reservation-visit-datetime">Visit Date & Time *</label>
+                    <input type="datetime-local" id="reservation-visit-datetime" name="visit_datetime" required>
+                </div>
+                <!-- Hall Status for Reservation -->
+                <h3 style="margin-top: 15px; margin-bottom: 15px;">Set Hall Status:</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="hall-status-in" name="reservation_hall_status" value="In">
+                        <label for="hall-status-in">In Hall</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="hall-status-out" name="reservation_hall_status" value="Out" checked>
+                        <label for="hall-status-out">Out of Hall</label>
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="createReservation()" style="margin-top: 15px;">Create Reservation</button>
+            </div>
+        </div>
+
+        <!-- Patients Tab -->
+        <div id="patients" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #4a5568;">Patient Management</h2>
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="patient-search" placeholder="Search patients by name, ID, or parent..." onkeyup="searchPatients()">
+            </div>
+            <div id="patients-list">
+                <!-- Patients will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Add Patient Tab -->
+        <div id="add-patient" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #4a5568;">Add New Patient</h2>
+            <form id="patient-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first-name">First Name *</label>
+                        <input type="text" id="first-name" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Last Name *</label>
+                        <input type="text" id="last-name" name="last_name" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date-of-birth">Date of Birth *</label>
+                        <input type="date" id="date-of-birth" name="date_of_birth" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender *</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="parent-name">Parent/Guardian Name *</label>
+                        <input type="text" id="parent-name" name="parent_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Parent Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patient-phone">Patient Phone Number</label>
+                        <input type="tel" id="patient-phone" name="patient_phone" placeholder="Optional">
+                    </div>
+                    <div class="form-group">
+                        <!-- Empty div for layout balance -->
+                    </div>
+                </div>
+
+                <!-- Address Components -->
+                <div class="form-group">
+                    <label>Address Components</label>
+                    <div class="form-row-4">
+                        <div>
+                            <label for="city">City</label>
+                            <select id="city" name="city">
+                                <option value="">Select City</option>
+                                <option value="New York">Cairo</option>
+                                <option value="Los Angeles">Ismaili'iah</option>
+                                <option value="Chicago">Suez</option>
+                                <option value="Houston">Portsaied</option>
+                                <option value="Phoenix">Alexandria</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="area">Area</label>
+                            <select id="area" name="area">
+                                <option value="">Select Area</option>
+                                <option value="Downtown">Downtown</option>
+                                <option value="Uptown">Uptown</option>
+                                <option value="Midtown">Midtown</option>
+                                <option value="Suburbs">The country side</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="street">Street</label>
+                            <select id="street" name="street">
+                                <option value="">Select Street</option>
+                                <option value="Main Street">Main Street</option>
+                                <option value="Oak Avenue">High way</option>
+                                <option value="Pine Road">Ard elgamyat</option>
+                                <option value="Elm Street">Al-Sultan Hussien</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="apartment">Apartment</label>
+                            <input type="text" id="apartment" name="apartment" placeholder="Apt #">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Removed Visit Information from Add Patient -->
+                <!--
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="visit-datetime">Visit Date & Time *</label>
+                        <input type="datetime-local" id="visit-datetime" name="visit_datetime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="visit-type">Visit Type *</label>
+                        <select id="visit-type" name="visit_type" required>
+                            <option value="">Select Visit Type</option>
+                            <option value="examination">Examination</option>
+                            <option value="fast examination">Fast Examination</option>
+                            <option value="consultation">Consultation</option>
+                        </select>
+                    </div>
+                </div>
+                -->
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="blood-type">Blood Type</label>
+                        <select id="blood-type" name="blood_type">
+                            <option value="">Select Blood Type</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Known Allergies with Checkboxes -->
+                <div class="form-group">
+                    <label>Known Allergies</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="allergy-peanuts" name="allergies" value="Peanuts">
+                            <label for="allergy-peanuts">Peanuts</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="allergy-penicillin" name="allergies" value="Penicillin">
+                            <label for="allergy-penicillin">Penicillin</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="allergy-shellfish" name="allergies" value="Shellfish">
+                            <label for="allergy-shellfish">Shellfish</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="allergy-eggs" name="allergies" value="Eggs">
+                            <label for="allergy-eggs">Eggs</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="allergy-milk" name="allergies" value="Milk">
+                            <label for="allergy-milk">Milk</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="allergy-soy" name="allergies" value="Soy">
+                            <label for="allergy-soy">Soy</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="allergy-wheat" name="allergies" value="Wheat">
+                            <label for="allergy-wheat">Wheat</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="allergy-latex" name="allergies" value="Latex">
+                            <label for="allergy-latex">Latex</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="medical-history">Medical History</label>
+                    <textarea id="medical-history" name="medical_history" rows="4" placeholder="Enter relevant medical history"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <span id="add-patient-loading" class="loading" style="display: none;"></span>
+                    Add Patient
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+            </form>
+        </div>
+
+        <!-- Awaiting Hall Tab -->
+        <div id="awaiting-hall" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #4a5568;">Awaiting Patient in Hall</h2>
+            <div style="margin-bottom: 20px;">
+                <label>
+                    <input type="checkbox" id="select-all-awaiting" onchange="toggleSelectAllAwaiting()">
+                    Select All
+                </label>
+            </div>
+            <div id="awaiting-patients-list"></div>
+            <button class="btn btn-success" onclick="finishSelectedPatients()" style="margin-top: 20px;">Finish Selected</button>
+        </div>
+
+        <!-- Finished Reservations Tab -->
+        <div id="finished-reservations" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #4a5568;">Finished Reservations</h2>
+            <div id="finished-patients-list"></div>
+        </div>
+
+        <!-- Patient History Tab -->
+        <div id="patient-history" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #4a5568;">Patient History Search</h2>
+            
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="history-search" placeholder="Search patient by name..." onkeyup="searchPatientHistory()">
+            </div>
+            
+            <div id="history-search-results" style="margin-top: 20px;"></div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #4a5568;">Clinic Settings</h2>
+            
+            <form id="clinic-config-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="doctor-name-config">Doctor Name *</label>
+                        <input type="text" id="doctor-name-config" name="doctor_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="clinic-name-config">Clinic Name *</label>
+                        <input type="text" id="clinic-name-config" name="clinic_name" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clinic-phone-config">Clinic Phone Number *</label>
+                        <input type="tel" id="clinic-phone-config" name="clinic_phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="logo-path-config">Logo Path</label>
+                        <input type="text" id="logo-path-config" name="logo_path" placeholder="/path/to/logo.png">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="clinic-address-config">Clinic Address</label>
+                    <textarea id="clinic-address-config" name="clinic_address" rows="3" placeholder="Enter clinic address"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <span id="config-loading" class="loading" style="display: none;"></span>
+                    Save Configuration
+                </button>
+            </form>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="reports" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #4a5568;">Reports</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card" onclick="generateDailyReport()">
+                    <div class="stat-number">📅</div>
+                    <div class="stat-label">Daily Report</div>
+                </div>
+                <div class="stat-card" onclick="generateMonthlyReport()">
+                    <div class="stat-number">📊</div>
+                    <div class="stat-label">Monthly Report</div>
+                </div>
+                <div class="stat-card" onclick="generateAnnualReport()">
+                    <div class="stat-number">📈</div>
+                    <div class="stat-label">Annual Report</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px;">Individual Patient Report</h3>
+                <div class="form-group">
+                    <label for="report-patient">Select Patient for Report</label>
+                    <select id="report-patient" name="report_patient">
+                        <option value="">Choose a patient...</option>
+                    </select>
+                </div>
+                <button class="btn btn-success" onclick="generateReport()">
+                    <span id="report-loading" class="loading" style="display: none;"></span>
+                    📄 Generate & Print Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Details Modal -->
+    <div id="patient-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modal-patient-name" style="margin-bottom: 20px; color: #4a5568;"></h2>
+            <div id="modal-patient-details"></div>
+            <div style="margin-top: 20px;">
+                <textarea id="doctor-comments" placeholder="Add doctor's comments..." rows="3" style="width: 100%; margin-bottom: 15px;"></textarea>
+                <button class="btn btn-primary" onclick="saveComments()">💬 Save Comments</button>
+                <button class="btn btn-success" onclick="generatePatientReport()">📄 Generate Report</button>
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Details Modal -->
+    <div id="stats-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeStatsModal()">&times;</span>
+            <h2 id="stats-modal-title" style="margin-bottom: 20px; color: #4a5568;"></h2>
+            <div id="stats-modal-content"></div>
+            <button class="btn btn-secondary" onclick="closeStatsModal()" style="margin-top: 20px;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let patients = [];
+        let currentPatientId = null;
+        let selectedPatientForReservation = null;
+        let currentUser = null;
+        let clinicConfig = null;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+        });
+
+        // Check authentication status
+        async function checkAuthentication() {
+            try {
+                const response = await fetch('/api/auth/check-session');
+                const data = await response.json();
+                
+                if (!data.authenticated) {
+                    window.location.href = '/login';
+                    return;
+                }
+                
+                currentUser = data.user;
+                updateUserInfo();
+                initializeApp();
+                
+            } catch (error) {
+                console.error('Authentication check failed:', error);
+                window.location.href = '/login';
+            }
+        }
+
+        // Update user info in header
+        function updateUserInfo() {
+            const userInfoDiv = document.getElementById('user-info');
+            if (currentUser && clinicConfig) {
+                userInfoDiv.innerHTML = `
+                    <strong>${currentUser.username}</strong> (${currentUser.role})<br>
+                    <small>${clinicConfig.doctor_name} - ${clinicConfig.clinic_phone}</small>
+                `;
+            } else if (currentUser) {
+                userInfoDiv.innerHTML = `
+                    <strong>${currentUser.username}</strong> (${currentUser.role})<br>
+                    <small>Dr. [Doctor Name] - Clinic Phone: [Phone Number]</small>
+                `;
+            }
+        }
+
+        // Initialize app after authentication
+        function initializeApp() {
+            loadClinicConfig();
+            loadPatients();
+            updateDashboard();
+            loadPatientsForReports();
+            setDefaultReservationDateTime();
+            
+            // Show settings tab for admin users
+            if (currentUser && currentUser.role === 'admin') {
+                document.getElementById('settings-tab').style.display = 'block';
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+                window.location.href = '/login';
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '/login';
+            }
+        }
+
+        // Set default reservation date/time to current
+        function setDefaultReservationDateTime() { // Renamed function for clarity
+            const now = new Date();
+            const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            // Updated ID to target the reservation form's datetime input
+            const reservationDateTimeInput = document.getElementById('reservation-visit-datetime');
+            if (reservationDateTimeInput) {
+                reservationDateTimeInput.value = localDateTime;
+            }
+        }
+
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            // event.target is used here, ensure it's called from an event listener
+            // or pass the element directly if calling programmatically.
+            const clickedTab = Array.from(navTabs).find(tab => tab.onclick.toString().includes(`showTab('${tabName}')`));
+            if (clickedTab) {
+                clickedTab.classList.add('active');
+            }
+            
+            // Refresh data when switching to certain tabs
+            if (tabName === 'patients') {
+                loadPatients();
+            } else if (tabName === 'dashboard') {
+                updateDashboard();
+            } else if (tabName === 'reports') {
+                loadPatientsForReports();
+            } else if (tabName === 'awaiting-hall') {
+                loadAwaitingPatients();
+            } else if (tabName === 'finished-reservations') {
+                loadFinishedPatients();
+            }
+        }
+
+        // Load all patients
+        async function loadPatients() {
+            try {
+                const response = await fetch('/api/patients');
+                if (response.ok) {
+                    patients = await response.json();
+                    displayPatients(patients);
+                    updateDashboard();
+                } else {
+                    console.error('Failed to load patients');
+                }
+            } catch (error) {
+                console.error('Error loading patients:', error);
+            }
+        }
+
+        // Display patients in the list
+        function displayPatients(patientsToShow) {
+            const patientsList = document.getElementById('patients-list');
+            
+            if (patientsToShow.length === 0) {
+                patientsList.innerHTML = '<p style="text-align: center; color: #718096; padding: 40px;">No patients found. Add your first patient to get started!</p>';
+                return;
+            }
+            
+            patientsList.innerHTML = patientsToShow.map(patient => {
+                const age = calculateAge(patient.date_of_birth);
+                return `
+                    <div class="patient-card">
+                        <div class="patient-header">
+                            <div class="patient-name">${patient.first_name} ${patient.last_name}</div>
+                            <div class="patient-age">${age} years old</div>
+                        </div>
+                        <div class="patient-info">
+                            <div class="info-item">
+                                <span class="info-label">ID:</span> ${patient.id}
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Gender:</span> ${patient.gender}
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Parent:</span> ${patient.parent_name}
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Phone:</span> ${patient.phone}
+                            </div>
+                            ${patient.visit_type ? `
+                            <div class="info-item">
+                                <span class="info-label">Visit Type:</span> ${patient.visit_type}
+                            </div>
+                            ` : ''}
+                            ${patient.hall_status ? `
+                            <div class="info-item">
+                                <span class="info-label">Hall Status:</span> 
+                                <span class="${patient.hall_status === 'In' ? 'status-in' : 'status-out'}">${patient.hall_status}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        <div class="patient-actions">
+                            <button class="btn btn-primary" onclick="viewPatient(${patient.id})">👁️ View Details</button>
+                            <button class="btn btn-success" onclick="generatePatientReportById(${patient.id})">📄 Generate Report</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Search patients
+        function searchPatients() {
+            const searchTerm = document.getElementById('patient-search').value.toLowerCase();
+            const filteredPatients = patients.filter(patient => 
+                patient.first_name.toLowerCase().includes(searchTerm) ||
+                patient.last_name.toLowerCase().includes(searchTerm) ||
+                patient.parent_name.toLowerCase().includes(searchTerm) ||
+                patient.id.toString().includes(searchTerm)
+            );
+            displayPatients(filteredPatients);
+        }
+
+        // Search existing patients for reservation
+        function searchExistingPatients() {
+            const searchTerm = document.getElementById('reservation-search').value.toLowerCase();
+            const resultsDiv = document.getElementById('existing-patients-results');
+            
+            if (searchTerm.length < 2) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+            
+            const filteredPatients = patients.filter(patient => 
+                patient.first_name.toLowerCase().includes(searchTerm) ||
+                patient.last_name.toLowerCase().includes(searchTerm) ||
+                patient.parent_name.toLowerCase().includes(searchTerm) ||
+                patient.id.toString().includes(searchTerm)
+            );
+            
+            if (filteredPatients.length === 0) {
+                resultsDiv.innerHTML = '<p style="color: #718096;">No existing patients found.</p>';
+                return;
+            }
+            
+            resultsDiv.innerHTML = filteredPatients.map(patient => `
+                <div class="patient-card" onclick="selectPatientForReservation(${patient.id})">
+                    <div class="patient-header">
+                        <div class="patient-name">${patient.first_name} ${patient.last_name}</div>
+                        <div class="patient-age">${calculateAge(patient.date_of_birth)} years old</div>
+                    </div>
+                    <div class="patient-info">
+                        <div class="info-item">
+                            <span class="info-label">ID:</span> ${patient.id}
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Parent:</span> ${patient.parent_name}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Select patient for reservation
+        function selectPatientForReservation(patientId) {
+            selectedPatientForReservation = patientId;
+            document.getElementById('reservation-form').style.display = 'block';
+            setDefaultReservationDateTime(); // Set date/time when form appears
+            showAlert(`Patient selected. Please choose visit type.`, 'success');
+        }
+
+        // Create reservation
+        async function createReservation() {
+            if (!selectedPatientForReservation) {
+                showAlert('Please select a patient first', 'error');
+                return;
+            }
+            
+            const visitType = document.querySelector('input[name="visit_type"]:checked');
+            if (!visitType) {
+                showAlert('Please select a visit type', 'error');
+                return;
+            }
+            
+            const visitDateTimeInput = document.getElementById('reservation-visit-datetime');
+            if (!visitDateTimeInput.value) {
+                showAlert('Please select a visit date and time', 'error');
+                return;
+            }
+            const visitDateTime = new Date(visitDateTimeInput.value).toISOString();
+
+            const hallStatus = document.querySelector('input[name="reservation_hall_status"]:checked');
+            if (!hallStatus) {
+                showAlert('Please select a hall status', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/patients/${selectedPatientForReservation}/reservation`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        visit_type: visitType.value,
+                        visit_datetime: visitDateTime,
+                        hall_status: hallStatus.value // Include hall_status in the payload
+                    })
+                });
+                
+                if (response.ok) {
+                    showAlert('Reservation created successfully!', 'success');
+                    document.getElementById('reservation-form').style.display = 'none';
+                    document.getElementById('reservation-search').value = '';
+                    document.getElementById('existing-patients-results').innerHTML = '';
+                    selectedPatientForReservation = null;
+                    // Reset radio buttons
+                    document.querySelectorAll('input[name="visit_type"]').forEach(radio => radio.checked = false);
+                    document.getElementById('hall-status-out').checked = true; // Reset hall status to default 'Out'
+                    loadPatients();
+                    updateDashboard();
+                } else {
+                    const errorData = await response.json();
+                    showAlert('Error creating reservation: ' + (errorData.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                console.error('Error creating reservation:', error);
+                showAlert('Error creating reservation: ' + error.message, 'error');
+            }
+        }
+
+        // Calculate age from date of birth
+        function calculateAge(dateOfBirth) {
+            const today = new Date();
+            const birthDate = new Date(dateOfBirth);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+
+        // Add new patient
+        document.getElementById('patient-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const loadingSpinner = document.getElementById('add-patient-loading');
+            loadingSpinner.style.display = 'inline-block';
+            
+            const formData = new FormData(e.target);
+            const patientData = Object.fromEntries(formData.entries());
+            
+            // Handle allergies checkboxes
+            const allergies = [];
+            document.querySelectorAll('input[name="allergies"]:checked').forEach(checkbox => {
+                allergies.push(checkbox.value);
+            });
+            patientData.allergies = allergies; // Send as array, backend will handle JSON conversion
+            
+            // Remove visit_datetime and visit_type from patientData before sending
+            // as they are handled by the reservation system.
+            delete patientData['visit_datetime'];
+            delete patientData['visit_type'];
+
+            try {
+                const response = await fetch('/api/patients', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(patientData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showAlert('Patient added successfully!', 'success');
+                    clearForm();
+                    loadPatients();
+                    loadPatientsForReports();
+                    updateDashboard();
+                    
+                    // Close add patient page and return to dashboard with message
+                    setTimeout(() => {
+                        showTab('dashboard');
+                        showAlert('Patient added successfully! Returned to dashboard.', 'success');
+                    }, 1000);
+                } else {
+                    showAlert('Error adding patient: ' + (result.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                console.error('Error adding patient:', error);
+                showAlert('Error adding patient: ' + error.message, 'error');
+            } finally {
+                loadingSpinner.style.display = 'none';
+            }
+        });
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('patient-form').reset();
+            // No need to set default visit datetime for add patient form anymore
+            // setDefaultReservationDateTime(); // Removed this line
+        }
+
+        // View patient details
+        async function viewPatient(patientId) {
+            try {
+                const response = await fetch(`/api/patients/${patientId}`);
+                if (response.ok) {
+                    const patient = await response.json();
+                    showPatientModal(patient);
+                } else {
+                    showAlert('Error loading patient details', 'error');
+                }
+            } catch (error) {
+                showAlert('Error loading patient details: ' + error.message, 'error');
+            }
+        }
+
+        // Show patient modal
+        function showPatientModal(patient) {
+            currentPatientId = patient.id;
+            const modal = document.getElementById('patient-modal');
+            const patientName = document.getElementById('modal-patient-name');
+            const patientDetails = document.getElementById('modal-patient-details');
+            const commentsTextarea = document.getElementById('doctor-comments');
+            
+            patientName.textContent = `${patient.first_name} ${patient.last_name}`;
+            commentsTextarea.value = patient.doctor_comments || '';
+            
+            const age = calculateAge(patient.date_of_birth);
+            const allergies = patient.allergies ? JSON.parse(patient.allergies) : [];
+            
+            patientDetails.innerHTML = `
+                <div class="form-row">
+                    <div><strong>Patient ID:</strong> ${patient.id}</div>
+                    <div><strong>Age:</strong> ${age} years old</div>
+                </div>
+                <div class="form-row">
+                    <div><strong>Date of Birth:</strong> ${new Date(patient.date_of_birth).toLocaleDateString()}</div>
+                    <div><strong>Gender:</strong> ${patient.gender}</div>
+                </div>
+                <div class="form-row">
+                    <div><strong>Parent/Guardian:</strong> ${patient.parent_name}</div>
+                    <div><strong>Phone:</strong> ${patient.phone}</div>
+                </div>
+                ${patient.full_address ? `<div><strong>Address:</strong> ${patient.full_address}</div>` : ''}
+                ${patient.visit_type ? `<div><strong>Visit Type:</strong> ${patient.visit_type}</div>` : ''}
+                ${patient.visit_datetime ? `<div><strong>Visit Date/Time:</strong> ${new Date(patient.visit_datetime).toLocaleString()}</div>` : ''}
+                ${patient.blood_type ? `<div><strong>Blood Type:</strong> ${patient.blood_type}</div>` : ''}
+                ${allergies.length > 0 ? `<div><strong>Allergies:</strong> ${allergies.join(', ')}</div>` : ''}
+                ${patient.medical_history ? `<div><strong>Medical History:</strong> ${patient.medical_history}</div>` : ''}
+                <div><strong>Registration Date:</strong> ${new Date(patient.created_at).toLocaleDateString()}</div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        // Save doctor comments
+        async function saveComments() {
+            if (!currentPatientId) return;
+            
+            const comments = document.getElementById('doctor-comments').value;
+            
+            try {
+                const response = await fetch(`/api/patients/${currentPatientId}/comments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ comments })
+                });
+                
+                if (response.ok) {
+                    showAlert('Comments saved successfully!', 'success');
+                } else {
+                    showAlert('Error saving comments', 'error');
+                }
+            } catch (error) {
+                showAlert('Error saving comments: ' + error.message, 'error');
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('patient-modal').style.display = 'none';
+            currentPatientId = null;
+        }
+
+        // Generate report for current patient in modal
+        function generatePatientReport() {
+            if (currentPatientId) {
+                generatePatientReportById(currentPatientId);
+            }
+        }
+
+        // Generate report for specific patient
+        async function generatePatientReportById(patientId) {
+            const loadingSpinner = document.getElementById('report-loading');
+            if (loadingSpinner) loadingSpinner.style.display = 'inline-block';
+            
+            try {
+                const response = await fetch(`/api/patients/${patientId}/report`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `patient_${patientId}_report.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    showAlert('Report generated and downloaded successfully!', 'success');
+                } else {
+                    showAlert('Error generating report', 'error');
+                }
+            } catch (error) {
+                showAlert('Error generating report: ' + error.message, 'error');
+            } finally {
+                if (loadingSpinner) loadingSpinner.style.display = 'none';
+            }
+        }
+
+        // Generate report from reports tab
+        async function generateReport() {
+            const patientSelect = document.getElementById('report-patient');
+            const patientId = patientSelect.value;
+            
+            if (!patientId) {
+                showAlert('Please select a patient first', 'error');
+                return;
+            }
+            
+            await generatePatientReportById(patientId);
+        }
+
+        // Load patients for reports dropdown
+        function loadPatientsForReports() {
+            const reportPatientSelect = document.getElementById('report-patient');
+            reportPatientSelect.innerHTML = '<option value="">Choose a patient...</option>';
+            
+            patients.forEach(patient => {
+                const option = document.createElement('option');
+                option.value = patient.id;
+                option.textContent = `${patient.first_name} ${patient.last_name} (ID: ${patient.id})`;
+                reportPatientSelect.appendChild(option);
+            });
+        }
+
+        // Update dashboard statistics
+        function updateDashboard() {
+            const totalPatients = patients.length;
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            const today = currentDate.toDateString();
+            
+            const newPatientsThisMonth = patients.filter(patient => {
+                const createdDate = new Date(patient.created_at);
+                return createdDate.getMonth() === currentMonth && createdDate.getFullYear() === currentYear;
+            }).length;
+            
+            const todayPatients = patients.filter(patient => {
+                if (!patient.visit_datetime) return false;
+                const visitDate = new Date(patient.visit_datetime);
+                return visitDate.toDateString() === today;
+            }).length;
+            
+            const averageAge = totalPatients > 0 ? 
+                Math.round(patients.reduce((sum, patient) => sum + calculateAge(patient.date_of_birth), 0) / totalPatients) : 0;
+            
+            document.getElementById('total-patients').textContent = totalPatients;
+            document.getElementById('new-patients').textContent = newPatientsThisMonth;
+            document.getElementById('avg-age').textContent = averageAge;
+            document.getElementById('today-patients').textContent = todayPatients;
+        }
+
+        // Show total patients details
+        function showTotalPatientsDetails() {
+            const examination = patients.filter(p => p.visit_type === 'examination').length;
+            const fastExamination = patients.filter(p => p.visit_type === 'fast examination').length;
+            const consultation = patients.filter(p => p.visit_type === 'consultation').length;
+            
+            showStatsModal('Total Patients Details', `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${examination}</div>
+                        <div class="stat-label">Examination</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${fastExamination}</div>
+                        <div class="stat-label">Fast Examination</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${consultation}</div>
+                        <div class="stat-label">Consultation</div>
+                    </div>
+                </div>
+            `);
+        }
+
+        // Show new patients details
+        function showNewPatientsDetails() {
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            
+            const newPatients = patients.filter(patient => {
+                const createdDate = new Date(patient.created_at);
+                return createdDate.getMonth() === currentMonth && createdDate.getFullYear() === currentYear;
+            });
+            
+            const examination = newPatients.filter(p => p.visit_type === 'examination').length;
+            const fastExamination = newPatients.filter(p => p.visit_type === 'fast examination').length;
+            const consultation = newPatients.filter(p => p.visit_type === 'consultation').length;
+            
+            showStatsModal('New Patients This Month', `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${examination}</div>
+                        <div class="stat-label">Examination</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${fastExamination}</div>
+                        <div class="stat-label">Fast Examination</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${consultation}</div>
+                        <div class="stat-label">Consultation</div>
+                    </div>
+                </div>
+            `);
+        }
+
+        // Show average age details
+        function showAverageAgeDetails() {
+            const ages = patients.map(p => calculateAge(p.date_of_birth));
+            const minAge = ages.length > 0 ? Math.min(...ages) : 0;
+            const maxAge = ages.length > 0 ? Math.max(...ages) : 0;
+            const avgAge = ages.length > 0 ? Math.round(ages.reduce((a, b) => a + b, 0) / ages.length) : 0;
+            
+            showStatsModal('Age Statistics', `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${minAge}</div>
+                        <div class="stat-label">Youngest</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${avgAge}</div>
+                        <div class="stat-label">Average</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${maxAge}</div>
+                        <div class="stat-label">Oldest</div>
+                    </div>
+                </div>
+            `);
+        }
+
+        // Show today's patients details
+        function showTodayPatientsDetails() {
+            const today = new Date().toDateString();
+            const todayPatients = patients.filter(patient => {
+                if (!patient.visit_datetime) return false;
+                const visitDate = new Date(patient.visit_datetime);
+                return visitDate.toDateString() === today;
+            });
+            
+            const expandedDiv = document.getElementById('today-patients-expanded');
+            const listDiv = document.getElementById('today-patients-list');
+            
+            if (todayPatients.length === 0) {
+                listDiv.innerHTML = '<p style="color: #718096;">No patients scheduled for today.</p>';
+            } else {
+                // Separate 'In' and 'Out' patients
+                const inPatients = todayPatients.filter(p => p.hall_status === 'In' && p.status !== 'in_hall' && p.status !== 'finished');
+                const outPatients = todayPatients.filter(p => p.hall_status === 'Out' && p.status !== 'finished');
+                const inHallPatients = todayPatients.filter(p => p.status === 'in_hall');
+                const finishedPatients = todayPatients.filter(p => p.status === 'finished');
+                
+                let content = '';
+                
+                if (inPatients.length > 0) {
+                    content += '<h4 style="color: #2ce707; margin-bottom: 10px;">📍 "In" Patients (Ready for Hall)</h4>';
+                    content += inPatients.map((patient, index) => `
+                        <div class="today-patient-item" style="border-left-color: #2ce707;">
+                            <div>
+                                <strong>${index + 1}. ID: ${patient.id}</strong> - ${patient.first_name} ${patient.last_name}<br>
+                                <small>Reservation: ${patient.visit_type || 'Not specified'}</small>
+                            </div>
+                            <div>
+                                Hall: <span class="status-in">${patient.hall_status}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+                if (outPatients.length > 0) {
+                    content += '<h4 style="color: #f30828; margin-bottom: 10px; margin-top: 20px;">📍 "Out" Patients (Remain in Today\'s List)</h4>';
+                    content += outPatients.map((patient, index) => `
+                        <div class="today-patient-item" style="border-left-color: #f30828;">
+                            <div>
+                                <strong>${index + 1}. ID: ${patient.id}</strong> - ${patient.first_name} ${patient.last_name}<br>
+                                <small>Reservation: ${patient.visit_type || 'Not specified'}</small>
+                            </div>
+                            <div>
+                                Hall: <span class="status-out">${patient.hall_status}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+                if (inHallPatients.length > 0) {
+                    content += '<h4 style="color: #667eea; margin-bottom: 10px; margin-top: 20px;">⏳ Currently in Awaiting Hall</h4>';
+                    content += inHallPatients.map((patient, index) => `
+                        <div class="today-patient-item" style="border-left-color: #667eea;">
+                            <div>
+                                <strong>${index + 1}. ID: ${patient.id}</strong> - ${patient.first_name} ${patient.last_name}<br>
+                                <small>Reservation: ${patient.visit_type || 'Not specified'}</small>
+                            </div>
+                            <div>
+                                Status: <span style="color: #667eea; font-weight: bold;">In Hall</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+                if (finishedPatients.length > 0) {
+                    content += '<h4 style="color: #48bb78; margin-bottom: 10px; margin-top: 20px;">✅ Finished Today</h4>';
+                    content += finishedPatients.map((patient, index) => `
+                        <div class="today-patient-item" style="border-left-color: #48bb78;">
+                            <div>
+                                <strong>${index + 1}. ID: ${patient.id}</strong> - ${patient.first_name} ${patient.last_name}<br>
+                                <small>Reservation: ${patient.visit_type || 'Not specified'}</small>
+                            </div>
+                            <div>
+                                Status: <span style="color: #48bb78; font-weight: bold;">Finished</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+                listDiv.innerHTML = content;
+            }
+            
+            expandedDiv.style.display = expandedDiv.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Submit today's patients to hall - only transfer 'In' patients
+        async function submitTodayPatients() {
+            try {
+                const response = await fetch('/api/patients/submit-to-hall', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert(data.message, 'success');
+                    loadPatients();
+                    updateDashboard();
+                    loadAwaitingPatients();
+                } else {
+                    showAlert('Error: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showAlert('Error submitting patients to hall: ' + error.message, 'error');
+            }
+        }
+
+        // Load awaiting patients
+        async function loadAwaitingPatients() {
+            try {
+                const response = await fetch('/api/patients/awaiting');
+                if (response.ok) {
+                    const awaitingPatients = await response.json();
+                    displayAwaitingPatients(awaitingPatients);
+                } else {
+                    console.error('Failed to load awaiting patients');
+                }
+            } catch (error) {
+                console.error('Error loading awaiting patients:', error);
+            }
+        }
+
+        // Display awaiting patients
+        function displayAwaitingPatients(awaitingPatients) {
+            const listDiv = document.getElementById('awaiting-patients-list');
+            
+            if (awaitingPatients.length === 0) {
+                listDiv.innerHTML = '<p style="color: #718096;">No patients currently awaiting in hall.</p>';
+                return;
+            }
+            
+            listDiv.innerHTML = awaitingPatients.map(patient => `
+                <div class="patient-card">
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <input type="checkbox" class="awaiting-checkbox" value="${patient.id}" style="margin-right: 10px;">
+                        <div class="patient-name">${patient.first_name} ${patient.last_name}</div>
+                    </div>
+                    <div class="patient-info">
+                        <div class="info-item">
+                            <span class="info-label">ID:</span> ${patient.id}
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Visit Type:</span> ${patient.visit_type || 'Not specified'}
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Visit Time:</span> ${patient.visit_datetime ? new Date(patient.visit_datetime).toLocaleTimeString() : 'Not specified'}
+                        </div>
+                    </div>
+                    <div class="patient-actions">
+                        <button class="btn btn-primary" onclick="viewPatient(${patient.id})">👁️ View Details</button>
+                        <button class="btn btn-success" onclick="generatePatientReportById(${patient.id})">📄 Generate Report</button>
+                        <button class="btn btn-secondary" onclick="returnPatientToToday(${patient.id})">↩️ Return to Today</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle select all awaiting patients
+        function toggleSelectAllAwaiting() {
+            const selectAll = document.getElementById('select-all-awaiting');
+            const checkboxes = document.querySelectorAll('.awaiting-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+        }
+
+        // Finish selected patients
+        async function finishSelectedPatients() {
+            const selectedCheckboxes = document.querySelectorAll('.awaiting-checkbox:checked');
+            const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+            
+            if (selectedIds.length === 0) {
+                showAlert('Please select at least one patient', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/patients/finish-selected', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ patient_ids: selectedIds })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert(data.message, 'success');
+                    loadPatients();
+                    loadAwaitingPatients();
+                    loadFinishedPatients();
+                } else {
+                    showAlert('Error: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showAlert('Error finishing patients: ' + error.message, 'error');
+            }
+        }
+
+        // Load finished patients
+        async function loadFinishedPatients() {
+            try {
+                const response = await fetch('/api/patients/finished');
+                if (response.ok) {
+                    const finishedPatients = await response.json();
+                    displayFinishedPatients(finishedPatients);
+                } else {
+                    console.error('Failed to load finished patients');
+                }
+            } catch (error) {
+                console.error('Error loading finished patients:', error);
+            }
+        }
+
+        // Display finished patients
+        function displayFinishedPatients(finishedPatients) {
+            const listDiv = document.getElementById('finished-patients-list');
+            
+            if (finishedPatients.length === 0) {
+                listDiv.innerHTML = '<p style="color: #718096;">No finished reservations yet.</p>';
+                return;
+            }
+            
+            listDiv.innerHTML = finishedPatients.map(patient => `
+                <div class="patient-card">
+                    <div class="patient-header">
+                        <div class="patient-name">${patient.first_name} ${patient.last_name}</div>
+                        <div class="patient-age">${calculateAge(patient.date_of_birth)} years old</div>
+                    </div>
+                    <div class="patient-info">
+                        <div class="info-item">
+                            <span class="info-label">ID:</span> ${patient.id}
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Visit Type:</span> ${patient.visit_type || 'Not specified'}
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Visit Date:</span> ${patient.visit_datetime ? new Date(patient.visit_datetime).toLocaleDateString() : 'Not specified'}
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Status:</span> <span style="color: #48bb78; font-weight: bold;">Finished</span>
+                        </div>
+                    </div>
+                    <div class="patient-actions">
+                        <button class="btn btn-primary" onclick="viewPatient(${patient.id})">👁️ View Details</button>
+                        <button class="btn btn-success" onclick="generatePatientReportById(${patient.id})">📄 Generate Report</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Return patient to today's patients
+        async function returnPatientToToday(patientId) {
+            try {
+                const response = await fetch('/api/patients/return-to-today', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ patient_ids: [patientId] })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert(data.message, 'success');
+                    loadPatients();
+                    loadAwaitingPatients();
+                    updateDashboard();
+                } else {
+                    showAlert('Error: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showAlert('Error returning patient to today: ' + error.message, 'error');
+            }
+        }
+
+        // Show stats modal
+        function showStatsModal(title, content) {
+            document.getElementById('stats-modal-title').textContent = title;
+            document.getElementById('stats-modal-content').innerHTML = content;
+            document.getElementById('stats-modal').style.display = 'block';
+        }
+
+        // Close stats modal
+        function closeStatsModal() {
+            document.getElementById('stats-modal').style.display = 'none';
+        }
+
+        // Generate daily report
+        function generateDailyReport() {
+            const today = new Date().toDateString();
+            const todayPatients = patients.filter(patient => {
+                if (!patient.visit_datetime) return false;
+                const visitDate = new Date(patient.visit_datetime);
+                return visitDate.toDateString() === today;
+            });
+            
+            const finished = todayPatients.filter(p => p.status === 'finished').length;
+            
+            const reportContent = `
+                <h3>Daily Report - ${new Date().toLocaleDateString()}</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${todayPatients.length}</div>
+                        <div class="stat-label">Total Patients</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${finished}</div>
+                        <div class="stat-label">Finished</div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    ${todayPatients.map((patient, index) => `
+                        <div style="padding: 10px; border-bottom: 1px solid #e2e8f0;">
+                            ${index + 1}. ID: ${patient.id} - ${patient.first_name} ${patient.last_name} 
+                            (${patient.visit_type || 'Not specified'}) - 
+                            Status: ${patient.status || 'waiting'}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            showStatsModal('Daily Report', reportContent);
+        }
+
+        // Generate monthly report
+        function generateMonthlyReport() {
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            
+            const monthlyPatients = patients.filter(patient => {
+                if (!patient.visit_datetime) return false;
+                const visitDate = new Date(patient.visit_datetime);
+                return visitDate.getMonth() === currentMonth && visitDate.getFullYear() === currentYear;
+            });
+            
+            const examination = monthlyPatients.filter(p => p.visit_type === 'examination').length;
+            const fastExamination = monthlyPatients.filter(p => p.visit_type === 'fast examination').length;
+            const consultation = monthlyPatients.filter(p => p.visit_type === 'consultation').length;
+            const newPatients = patients.filter(patient => {
+                const createdDate = new Date(patient.created_at);
+                return createdDate.getMonth() === currentMonth && createdDate.getFullYear() === currentYear;
+            }).length;
+            
+            const reportContent = `
+                <h3>Monthly Report - ${currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${examination}</div>
+                        <div class="stat-label">Examinations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${fastExamination}</div>
+                        <div class="stat-label">Fast Examination</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${consultation}</div>
+                        <div class="stat-label">Consultations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${newPatients}</div>
+                        <div class="stat-label">New Patients</div>
+                    </div>
+                </div>
+            `;
+            
+            showStatsModal('Monthly Report', reportContent);
+        }
+
+        // Generate annual report
+        function generateAnnualReport() {
+            const currentYear = new Date().getFullYear();
+            
+            const yearlyPatients = patients.filter(patient => {
+                if (!patient.visit_datetime) return false;
+                const visitDate = new Date(patient.visit_datetime);
+                return visitDate.getFullYear() === currentYear;
+            });
+            
+            const examination = yearlyPatients.filter(p => p.visit_type === 'examination').length;
+            const fastExamination = yearlyPatients.filter(p => p.visit_type === 'fast examination').length;
+            const consultation = yearlyPatients.filter(p => p.visit_type === 'consultation').length;
+            const newPatients = patients.filter(patient => {
+                const createdDate = new Date(patient.created_at);
+                return createdDate.getFullYear() === currentYear;
+            }).length;
+            
+            const reportContent = `
+                <h3>Annual Report - ${currentYear}</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${examination}</div>
+                        <div class="stat-label">Examinations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${fastExamination}</div>
+                        <div class="stat-label">Fast Examinations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${consultation}</div>
+                        <div class="stat-label">Consultations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${newPatients}</div>
+                        <div class="stat-label">New Patients</div>
+                    </div>
+                </div>
+            `;
+            
+            showStatsModal('Annual Report', reportContent);
+        }
+
+        // Search patient history
+        async function searchPatientHistory() {
+            const searchTerm = document.getElementById('history-search').value.trim();
+            const resultsDiv = document.getElementById('history-search-results');
+            
+            if (searchTerm.length < 2) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/patients/search-history/${encodeURIComponent(searchTerm)}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayPatientHistory(data.patient_histories);
+                } else if (response.status === 404) {
+                    resultsDiv.innerHTML = '<p style="color: #718096; text-align: center; padding: 20px;">No patients found with that name.</p>';
+                } else {
+                    resultsDiv.innerHTML = '<p style="color: #e53e3e; text-align: center; padding: 20px;">Error searching patient history.</p>';
+                }
+            } catch (error) {
+                console.error('Error searching patient history:', error);
+                resultsDiv.innerHTML = '<p style="color: #e53e3e; text-align: center; padding: 20px;">Network error occurred.</p>';
+            }
+        }
+
+        // Display patient history results
+        function displayPatientHistory(patientHistories) {
+            const resultsDiv = document.getElementById('history-search-results');
+            
+            if (patientHistories.length === 0) {
+                resultsDiv.innerHTML = '<p style="color: #718096; text-align: center; padding: 20px;">No patients found.</p>';
+                return;
+            }
+            
+            resultsDiv.innerHTML = patientHistories.map(history => {
+                const patient = history.patient_info;
+                const age = calculateAge(patient.date_of_birth);
+                
+                return `
+                    <div class="patient-card">
+                        <div class="patient-header">
+                            <div class="patient-name">${patient.first_name} ${patient.last_name}</div>
+                            <div class="patient-age">${age} years old</div>
+                        </div>
+                        <div class="patient-info">
+                            <div class="info-item">
+                                <span class="info-label">ID:</span> ${patient.id}
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Parent:</span> ${patient.parent_name}
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Parent Phone:</span> ${patient.phone}
+                            </div>
+                            ${patient.patient_phone ? `
+                            <div class="info-item">
+                                <span class="info-label">Patient Phone:</span> ${patient.patient_phone}
+                            </div>
+                            ` : ''}
+                            <div class="info-item">
+                                <span class="info-label">Registration Date:</span> ${new Date(patient.created_at).toLocaleDateString()}
+                            </div>
+                        </div>
+                        
+                        ${history.visit_history.length > 0 ? `
+                        <div style="margin-top: 15px;">
+                            <h4 style="color: #4a5568; margin-bottom: 10px;">Visit History:</h4>
+                            ${history.visit_history.map(visit => `
+                                <div style="background: #f7fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #667eea;">
+                                    ${visit.visit_date ? `<div><strong>Visit Date:</strong> ${new Date(visit.visit_date).toLocaleDateString()}</div>` : ''}
+                                    ${visit.visit_type ? `<div><strong>Visit Type:</strong> ${visit.visit_type}</div>` : ''}
+                                    ${visit.doctor_comments ? `<div><strong>Doctor Comments & Medications:</strong> ${visit.doctor_comments}</div>` : ''}
+                                    <div><strong>Status:</strong> ${visit.status ? visit.status.replace('_', ' ').toUpperCase() : 'N/A'}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : '<div style="margin-top: 15px; color: #718096;">No visit history recorded.</div>'}
+                        
+                        ${patient.medical_history ? `
+                        <div style="margin-top: 15px;">
+                            <h4 style="color: #4a5568; margin-bottom: 5px;">Medical History:</h4>
+                            <div style="background: #f0fff4; padding: 10px; border-radius: 8px; border-left: 4px solid #48bb78;">
+                                ${patient.medical_history}
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        ${patient.allergies ? `
+                        <div style="margin-top: 15px;">
+                            <h4 style="color: #4a5568; margin-bottom: 5px;">Known Allergies:</h4>
+                            <div style="background: #fed7d7; padding: 10px; border-radius: 8px; border-left: 4px solid #f56565;">
+                                ⚠️ ${typeof patient.allergies === 'string' ? patient.allergies : JSON.parse(patient.allergies).join(', ')}
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="patient-actions" style="margin-top: 15px;">
+                            <button class="btn btn-primary" onclick="viewPatient(${patient.id})">👁️ View Details</button>
+                            <button class="btn btn-success" onclick="generatePatientHistoryReport(${patient.id})">📄 Generate History Report</button>
+                            <button class="btn btn-success" onclick="generatePatientReportById(${patient.id})">📄 Current Report</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Load clinic configuration
+        async function loadClinicConfig() {
+            try {
+                const response = await fetch('/api/clinic/config');
+                if (response.ok) {
+                    clinicConfig = await response.json();
+                    updateUserInfo();
+                    
+                    // Update settings form if it exists
+                    if (document.getElementById('doctor-name-config')) {
+                        document.getElementById('doctor-name-config').value = clinicConfig.doctor_name;
+                        document.getElementById('clinic-name-config').value = clinicConfig.clinic_name;
+                        document.getElementById('clinic-phone-config').value = clinicConfig.clinic_phone;
+                        document.getElementById('logo-path-config').value = clinicConfig.logo_path || '';
+                        document.getElementById('clinic-address-config').value = clinicConfig.clinic_address || '';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading clinic config:', error);
+            }
+        }
+
+        // Perform daily reset
+        async function performDailyReset() {
+            if (!confirm('Are you sure you want to perform a daily reset? This will clear all patient statuses and reservations for a new day.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/patients/daily-reset', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showAlert(`Daily reset completed successfully! ${data.reset_count} patients reset.`, 'success');
+                    loadPatients();
+                    updateDashboard();
+                    loadAwaitingPatients();
+                    loadFinishedPatients();
+                } else {
+                    showAlert('Error performing daily reset', 'error');
+                }
+            } catch (error) {
+                showAlert('Error performing daily reset: ' + error.message, 'error');
+            }
+        }
+
+        // Handle clinic configuration form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const configForm = document.getElementById('clinic-config-form');
+            if (configForm) {
+                configForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const loadingSpinner = document.getElementById('config-loading');
+                    loadingSpinner.style.display = 'inline-block';
+                    
+                    const formData = new FormData(e.target);
+                    const configData = Object.fromEntries(formData.entries());
+                    
+                    try {
+                        const response = await fetch('/api/clinic/config', {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(configData)
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok) {
+                            showAlert('Clinic configuration updated successfully!', 'success');
+                            clinicConfig = result.config;
+                            updateUserInfo();
+                        } else {
+                            showAlert('Error updating configuration: ' + (result.error || 'Unknown error'), 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error updating configuration:', error);
+                        showAlert('Error updating configuration: ' + error.message, 'error');
+                    } finally {
+                        loadingSpinner.style.display = 'none';
+                    }
+                });
+            }
+        });
+        async function generatePatientHistoryReport(patientId) {
+            try {
+                const response = await fetch(`/api/patients/${patientId}/history-report`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `patient_${patientId}_history_report.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    showAlert('Patient history report generated and downloaded successfully!', 'success');
+                } else {
+                    showAlert('Error generating history report', 'error');
+                }
+            } catch (error) {
+                showAlert('Error generating history report: ' + error.message, 'error');
+            }
+        }
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const patientModal = document.getElementById('patient-modal');
+            const statsModal = document.getElementById('stats-modal');
+            
+            if (event.target === patientModal) {
+                closeModal();
+            } else if (event.target === statsModal) {
+                closeStatsModal();
+            }
+        }
+    </script>
+</body>
+</html>
